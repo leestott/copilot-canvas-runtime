@@ -186,3 +186,7 @@ licensing, not the idea.
 
 See also: the [blog post](docs/blog/shaping-software-while-it-runs.html) and the
 [engineer showcase prompt](prompts/canvas-showcase-prompt.md).
+
+---
+
+**Repository:** <https://github.com/leestott/copilot-canvas-runtime>

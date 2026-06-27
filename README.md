@@ -1,8 +1,13 @@
 # 🎨 Multi-Agent Dev Canvas
 
+[![Repo](https://img.shields.io/badge/GitHub-leestott%2Fcopilot--canvas--runtime-181717?logo=github)](https://github.com/leestott/copilot-canvas-runtime)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](#license)
+
 A GitHub Copilot Canvas extension that demonstrates **Canvas as a runtime observability and control plane** for multi-agent development — not a traditional UI builder.
 
 > **Canvas redefines software development** by shifting from writing static code to orchestrating living systems, where developers and AI co-create, observe, and evolve solutions in real time.
+
+📦 **Repository:** https://github.com/leestott/copilot-canvas-runtime
 
 ![Multi-Agent Dev Canvas](docs/blog/canvas-demo.png)
 
@@ -66,6 +71,10 @@ not for building a DevOps board.
 The canvas extension lives at `.github/extensions/multi-agent-dev/extension.mjs`. To use it:
 
 1. **Clone this repo** into your project or copy the `.github/extensions/multi-agent-dev/` folder into your own repo.
+
+   ```bash
+   git clone https://github.com/leestott/copilot-canvas-runtime.git
+   ```
 
 2. **Reload extensions** in GitHub Copilot CLI:
    ```
