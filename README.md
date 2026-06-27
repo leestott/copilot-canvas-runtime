@@ -1,7 +1,11 @@
 # 🎨 Multi-Agent Dev Canvas
 
-[![Repo](https://img.shields.io/badge/GitHub-leestott%2Fcopilot--canvas--runtime-181717?logo=github)](https://github.com/leestott/copilot-canvas-runtime)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](#license)
+[![GitHub Copilot CLI](https://img.shields.io/badge/GitHub%20Copilot%20CLI-canvas%20extension-000?logo=githubcopilot&logoColor=white)](https://github.com/leestott/copilot-canvas-runtime)
+[![Node.js](https://img.shields.io/badge/Node.js-built--ins%20only-5FA04E?logo=nodedotjs&logoColor=white)](https://nodejs.org)
+[![Dependencies](https://img.shields.io/badge/dependencies-zero-success)](#quick-start)
+[![Last commit](https://img.shields.io/github/last-commit/leestott/copilot-canvas-runtime?logo=git&logoColor=white)](https://github.com/leestott/copilot-canvas-runtime/commits/main)
+[![Stars](https://img.shields.io/github/stars/leestott/copilot-canvas-runtime?style=flat&logo=github)](https://github.com/leestott/copilot-canvas-runtime/stargazers)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 A GitHub Copilot Canvas extension that demonstrates **Canvas as a runtime observability and control plane** for multi-agent development — not a traditional UI builder.
 
