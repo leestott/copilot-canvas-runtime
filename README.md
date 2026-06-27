@@ -155,4 +155,4 @@ canvasdemo/
 
 ## License
 
-MIT
+MIT — see [LICENSE](LICENSE).
