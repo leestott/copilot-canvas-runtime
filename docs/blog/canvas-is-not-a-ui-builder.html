@@ -1,0 +1,285 @@
+<body>
+
+<h1>Canvas Is Not a UI Builder — It's a Runtime for Shaping Intelligent Systems</h1>
+
+<p>
+What if your development environment didn't just help you <em>write</em> code — but helped you <em>observe, steer, and evolve</em> a living system while it runs? That's the shift GitHub Copilot Canvas represents. Canvas redefines how developers interact with agent-driven software: not by building traditional user interfaces, but by creating interactive environments where humans and AI co-create, test, and iterate in real time.
+</p>
+
+<p>
+This post walks through a real Canvas extension we built — a <strong>Multi-Agent Dev Canvas</strong> — that demonstrates how Canvas becomes a runtime observability and control plane for an agent-driven system. We'll cover why Canvas exists, how it differs from traditional UI development, and how you can use it to accelerate the design-test-evolve loop for any multi-agent application.
+</p>
+
+<h2>The Misconception: "Canvas Is for Building UIs"</h2>
+
+<p>
+The first instinct many developers have when they see Canvas is to treat it like a UI framework — a place to build dashboards, boards, or user-facing applications. That's not what Canvas is for.
+</p>
+
+<p>
+Here's the distinction that matters:
+</p>
+
+<ul>
+<li><strong>Traditional UIs</strong> are for <em>using</em> software. They serve end-users who interact with a finished product.</li>
+<li><strong>Canvas</strong> is for <em>shaping</em> software while it runs. It serves developers and AI agents who are actively building, testing, and evolving a system.</li>
+</ul>
+
+<p>
+Canvas solves problems your final UI should never try to solve in a visible way. It's the observability layer, the control plane, the validation surface — all the things you need <em>during</em> development that disappear before production. Think of it this way: you wouldn't ship your debugger to users, but you absolutely need it while building.
+</p>
+
+<h2>What We Built: A Multi-Agent Dev Canvas</h2>
+
+<p>
+To demonstrate Canvas as a development runtime, we built a <strong>Multi-Agent Dev Canvas</strong> for the <a href="https://github.com/leestott/gamemaster">Foundry Game Master</a> project — an AI-powered tabletop RPG game master built on Azure AI Agent Service. The canvas treats the entire multi-agent system as a living, observable environment.
+</p>
+
+<img src="canvas-demo.png" alt="Multi-Agent Dev Canvas showing the system view with five AI agents, task flow pipeline, validation panel with pass/fail test results, live state timeline, and runtime controls" />
+<p><em>The Multi-Agent Dev Canvas: a runtime observability and control plane where developers and AI agents collaborate to design, test, and evolve an agent-driven system in real time.</em></p>
+
+<p>
+The canvas provides four integrated panels:
+</p>
+
+<h3>System View — See Your Agents Working</h3>
+
+<p>
+Five specialised agents are displayed as live cards with real-time status indicators. Each card shows the agent's name, responsibility, current status (idle, running, done, or error), task count, and last action taken. When an agent is active, its card pulses blue. When it fails, it glows red. You see the system breathe.
+</p>
+
+<ul>
+<li><code>decompose_system</code> — Breaks requirements into agent tasks</li>
+<li><code>execute_workflow</code> — Coordinates agents to perform tasks</li>
+<li><code>validate_output</code> — Runs evaluation tests and returns structured results</li>
+<li><code>update_system_design</code> — Modifies architecture based on feedback</li>
+<li><code>track_state</code> — Persists and updates system state over time</li>
+</ul>
+
+<h3>Task Flows — Watch Work Move Through the Pipeline</h3>
+
+<p>
+Below the agents, a flow graph visualises how tasks route between agents. When you decompose a system requirement like "Build an AI-powered code review agent," the canvas shows five components (pr-ingestion, code-analysis, feedback-generator, learning-loop, notification-service) flowing from the decomposer to the executor and designer agents. Each flow carries a status badge — pending, pass, or fail.
+</p>
+
+<h3>Validation Panel — Continuous Testing, Not Afterthought Testing</h3>
+
+<p>
+The validation panel displays structured test results with pass/fail badges and reasoning. When you run validation, each test case evaluates against specific criteria:
+</p>
+
+<ul>
+<li>✅ "PR ingestion handles large diffs" — Meets criteria: process diffs over 5,000 lines without timeout</li>
+<li>❌ "Feedback is actionable" — Failed: does not satisfy criteria that each suggestion includes a code fix</li>
+<li>✅ "Learning loop converges" — Meets criteria: accept rate improves over 10 iterations</li>
+<li>✅ "Notifications are non-blocking" — Meets criteria: delivery latency under 500ms</li>
+</ul>
+
+<p>
+This isn't a test runner you invoke separately — it's a validation surface embedded in the development loop. You see failures the moment they happen, in context, alongside the agents and flows that produced them.
+</p>
+
+<h3>Live State Timeline — Every Mutation, Visible</h3>
+
+<p>
+The right panel tracks every state change with timestamps. Decomposition events, workflow executions, validation runs, failure injections — all appear chronologically. This is the system's memory, visible to both the human developer and the AI agents working alongside them.
+</p>
+
+<h2>Canvas as a Runtime: The Key Capabilities</h2>
+
+<p>
+What makes Canvas a runtime rather than a display layer is that the agent can <em>act</em> through it. The canvas exposes seven agent-callable actions:
+</p>
+
+<table>
+<tr><th>Action</th><th>What It Does</th></tr>
+<tr><td><code>decompose_system</code></td><td>Accept requirements and components, generate task flows, update the system design</td></tr>
+<tr><td><code>execute_workflow</code></td><td>Run pending tasks through the agent pipeline, produce artifacts</td></tr>
+<tr><td><code>validate_output</code></td><td>Evaluate test cases against criteria, return structured pass/fail with reasoning</td></tr>
+<tr><td><code>update_system_design</code></td><td>Modify the architecture description, constraints, or component list live</td></tr>
+<tr><td><code>track_state</code></td><td>Read the full system state — agents, flows, validations, history, artifacts</td></tr>
+<tr><td><code>inject_failure</code></td><td>Force an agent into an error state to test system adaptation</td></tr>
+<tr><td><code>pause_resume</code></td><td>Toggle execution on and off</td></tr>
+</table>
+
+<p>
+The human developer can click Decompose, Execute, or Validate directly in the canvas. The AI agent can invoke the same actions programmatically. Both parties operate on the same surface, the same state, the same system — that's what makes Canvas collaborative in a way traditional tooling is not.
+</p>
+
+<h2>Why This Matters: Canvas vs. Figma vs. Traditional UIs</h2>
+
+<p>
+It helps to position Canvas against tools developers already know:
+</p>
+
+<ul>
+<li><strong>Figma</strong> is Human-to-Human collaboration on design. Multiple people interact with the same visual surface, but nothing executes. It's a design tool.</li>
+<li><strong>Traditional UIs</strong> are Human-to-System. Users interact with finished software through a polished interface.</li>
+<li><strong>Canvas</strong> is Human-to-AI-to-System. It's a shared space where things actually <em>execute</em>. The developer steers, the AI acts, and the system evolves — all visible, all in real time.</li>
+</ul>
+
+<p>
+Canvas is collaborative in the Figma sense — it's a shared space, it's visual, multiple participants interact with the same surface. But unlike Figma, the participants include AI agents, and the surface isn't a mockup — it's a live system.
+</p>
+
+<h2>How the Extension Works: Under the Hood</h2>
+
+<p>
+A Canvas extension is a standard GitHub Copilot CLI extension — a single <code>extension.mjs</code> file that speaks JSON-RPC over stdio. The key components:
+</p>
+
+<h3>1. State Management</h3>
+
+<p>
+Each canvas instance maintains its own system state: agents, task flows, validations, a state history timeline, artifacts, and the current system design. State is held in-memory per instance and pushed to the iframe via Server-Sent Events whenever it changes.
+</p>
+
+<pre>
+function createInitialState() {
+    return {
+        agents: [
+            { id: "decomposer", name: "decompose_system", 
+              status: "idle", responsibility: "Break requirements into agent tasks" },
+            { id: "executor", name: "execute_workflow", 
+              status: "idle", responsibility: "Coordinate agents to perform tasks" },
+            // ... three more agents
+        ],
+        taskFlows: [],
+        validations: [],
+        stateHistory: [],
+        artifacts: [],
+        systemDesign: { description: "", constraints: [], components: [] },
+        execution: { paused: false, stepCount: 0 },
+    };
+}
+</pre>
+
+<h3>2. Real-Time Updates via Server-Sent Events</h3>
+
+<p>
+The canvas runs a loopback HTTP server per instance. The iframe connects to an <code>/events</code> endpoint and receives state updates as they happen — no polling, no websocket complexity.
+</p>
+
+<pre>
+if (req.url === "/events") {
+    res.writeHead(200, { 
+        "Content-Type": "text/event-stream", 
+        "Cache-Control": "no-cache" 
+    });
+    clients.add(res);
+    // Push current state immediately on connect
+    res.write(`data: ${JSON.stringify(getState(instanceId))}\n\n`);
+}
+</pre>
+
+<h3>3. Dual Interaction Model</h3>
+
+<p>
+Every action is available through two paths. The human clicks a button in the iframe, which POSTs to the local server. The AI agent calls <code>invoke_canvas_action</code> through the SDK. Both paths mutate the same state and trigger the same SSE broadcast. Neither is privileged over the other.
+</p>
+
+<h3>4. Canvas Declaration</h3>
+
+<p>
+The canvas registers with the Copilot SDK using <code>createCanvas</code>, declaring its identity, description, and all agent-callable actions with JSON Schema validation on inputs:
+</p>
+
+<pre>
+createCanvas({
+    id: "multi-agent-dev",
+    displayName: "Multi-Agent Dev Canvas",
+    description: "Runtime observability and control plane for multi-agent development",
+    actions: [
+        {
+            name: "decompose_system",
+            description: "Break requirements into agent tasks",
+            inputSchema: { 
+                type: "object", 
+                properties: { 
+                    requirements: { type: "string" },
+                    components: { type: "array", items: { type: "string" } }
+                }, 
+                required: ["requirements"] 
+            },
+            handler: async (ctx) =&gt; { /* ... */ },
+        },
+        // ... six more actions
+    ],
+    open: async (ctx) =&gt; { /* start server, return URL */ },
+    onClose: async (ctx) =&gt; { /* clean up */ },
+});
+</pre>
+
+<h2>Scenarios This Enables</h2>
+
+<p>
+The Multi-Agent Dev Canvas supports four development scenarios that would be impossible with traditional tooling:
+</p>
+
+<h3>1. End-to-End Feature Design</h3>
+<p>
+Tell the agent "Build an AI-powered code review system." Watch it decompose the requirement into five components, route tasks to specialist agents, execute the workflow, and validate the outputs — all visible in real time. Iterate by modifying constraints or components and re-running.
+</p>
+
+<h3>2. Live Agent Collaboration Observation</h3>
+<p>
+See how agents hand off work to each other. The flow graph shows which agent produced what, which tasks are pending, and where bottlenecks form. This is the kind of observability you need when debugging multi-agent orchestration but would never expose in a production UI.
+</p>
+
+<h3>3. Fault Injection and Adaptation Testing</h3>
+<p>
+Use <code>inject_failure</code> to force an agent into an error state. Watch how the system responds. Does the orchestrator recover? Do downstream tasks fail gracefully? This chaos-engineering approach — applied during development, visible in real time — catches integration failures before they reach production.
+</p>
+
+<h3>4. Validation-Driven Iteration</h3>
+<p>
+Define test criteria, run validation, see which tests fail, update the system design, re-run. The validation panel isn't a separate CI pipeline — it's embedded in the development surface, creating a continuous feedback loop between design decisions and their measurable outcomes.
+</p>
+
+<h2>Getting Started: Build Your Own Canvas Extension</h2>
+
+<p>
+To create a Canvas extension in your own project:
+</p>
+
+<ol>
+<li><strong>Read the SDK docs</strong> — Run <code>extensions_manage({ operation: "guide" })</code> in GitHub Copilot CLI to get the canonical documentation paths.</li>
+<li><strong>Scaffold</strong> — Run <code>extensions_manage({ operation: "scaffold", kind: "canvas", name: "my-canvas", location: "project" })</code> to generate the boilerplate.</li>
+<li><strong>Implement</strong> — Edit <code>extension.mjs</code> with your canvas logic: state model, actions, renderer HTML, and SSE updates.</li>
+<li><strong>Reload</strong> — Run <code>extensions_reload</code> to activate your changes.</li>
+<li><strong>Drive</strong> — Open with <code>open_canvas</code>, invoke actions with <code>invoke_canvas_action</code>, and iterate.</li>
+</ol>
+
+<p>
+The canvas extension lives in <code>.github/extensions/your-canvas/extension.mjs</code> for project-scoped extensions, or in your user extensions directory for personal use. No <code>package.json</code> needed — the <code>@github/copilot-sdk</code> import is auto-resolved.
+</p>
+
+<h2>Key Takeaways</h2>
+
+<ul>
+<li><strong>Canvas is a development runtime, not a UI framework.</strong> You don't build Canvas instead of your UI — you use Canvas to figure out, test, and evolve the UI and system before and during building it.</li>
+<li><strong>Canvas solves problems your final UI should never expose.</strong> Agent observability, fault injection, live state mutation, validation feedback loops — these are development concerns, not user concerns.</li>
+<li><strong>Canvas is Human-to-AI-to-System collaboration.</strong> Both the developer and the AI agent operate on the same surface, the same state, the same running system. It's Figma-like collaboration, but with AI agents, and things actually execute.</li>
+<li><strong>Canvas turns debugging, testing, and execution into a continuous visual feedback loop.</strong> Instead of switching between an editor, a terminal, a test runner, and a monitoring dashboard, you have one surface where the system lives and evolves.</li>
+<li><strong>Canvas extensions are lightweight.</strong> A single <code>extension.mjs</code> file, no dependencies, loopback HTTP server with SSE — the infrastructure gets out of the way so you can focus on the system you're building.</li>
+</ul>
+
+<h2>The Bigger Picture</h2>
+
+<p>
+Canvas redefines software development by shifting from writing static code to orchestrating living systems. Developers and AI co-create, observe, and evolve solutions in real time. Instead of building UIs for users, we build interactive environments for agents — turning debugging, testing, and execution into a continuous, visual feedback loop that accelerates innovation and brings ideas to production faster than ever.
+</p>
+
+<p>
+The Multi-Agent Dev Canvas we built here is one example. The pattern applies anywhere you're building agent-driven systems: AI orchestration, workflow automation, data pipelines, autonomous services. Anywhere you need to see, steer, and validate a complex system as it runs — that's where Canvas belongs.
+</p>
+
+<h2>Resources</h2>
+
+<ul>
+<li><a href="https://github.com/leestott/gamemaster">Foundry Game Master Repository</a> — The multi-agent tabletop RPG project this canvas was built for</li>
+<li><a href="https://docs.github.com/en/copilot">GitHub Copilot Documentation</a> — Official documentation for GitHub Copilot features</li>
+<li><a href="https://learn.microsoft.com/en-us/azure/ai-services/agents/">Azure AI Agent Service Documentation</a> — Build and deploy AI agents on Azure</li>
+</ul>
+
+</body>

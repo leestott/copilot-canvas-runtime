@@ -1,0 +1,11 @@
+# Node
+node_modules/
+package-lock.json
+npm-debug.log*
+
+# Screenshot tooling scratch
+shot.mjs
+
+# OS
+.DS_Store
+Thumbs.db

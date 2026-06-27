@@ -1,0 +1,233 @@
+<body>
+
+<h1>Shaping Software While It Runs: A Canvas Scenario, Start to Finish</h1>
+
+<p>
+There is a moment, the first time you open a GitHub Copilot Canvas, when you
+reach for the wrong metaphor. You see panels, buttons, live status cards — and
+you think <em>"dashboard."</em> You start designing a DevOps board. We did exactly
+that. Then we watched the recording back, and we all agreed: it was the wrong use
+case.
+</p>
+
+<p>
+This post is the course‑correction. It walks through one complete scenario on a
+<strong>Multi‑Agent Dev Canvas</strong> and uses it to answer a single question:
+<em>what is Canvas actually for?</em> The short answer — Canvas is for <strong>test
+validation and implementation of agent‑driven solutions</strong>, not for
+building the UI your users will eventually click.
+</p>
+
+<h2>The reframe that changes everything</h2>
+
+<p>
+Here is the distinction worth tattooing on your monitor:
+</p>
+
+<ul>
+<li><strong>Traditional UIs are for <em>using</em> software.</strong> They serve
+end‑users interacting with a finished product.</li>
+<li><strong>Canvas is for <em>shaping</em> software while it runs.</strong> It
+serves developers and AI agents who are actively building, testing, and evolving
+a system.</li>
+</ul>
+
+<p>
+You don't build Canvas <em>instead of</em> your UI. You use Canvas to figure out,
+test, and evolve the UI and the system <em>before and during</em> building it.
+Canvas solves problems your final UI should never try to solve in a visible way —
+agent observability, fault injection, live state mutation, validation feedback.
+You wouldn't ship your debugger to users, but you absolutely need one while you
+build. Canvas is that, for agent‑driven systems.
+</p>
+
+<h2>The scenario: a Customer Support Triage System</h2>
+
+<p>
+To make this concrete, we drove one requirement end‑to‑end on the canvas:
+</p>
+
+<blockquote>
+Build a Customer Support Triage System that ingests incoming support tickets,
+classifies urgency (P1–P4), routes each ticket to the right team (Billing,
+Technical, Account, General), and drafts a first‑response reply. It must handle
+500 tickets/hour and respond within 30 seconds.
+</blockquote>
+
+<p>
+Five specialist agents share the surface — <code>decomposer</code>,
+<code>executor</code>, <code>validator</code>, <code>designer</code>, and
+<code>tracker</code>. Crucially, every action can be triggered two ways: a human
+clicking a button, or the AI calling <code>invoke_canvas_action</code>. Both
+mutate the same state and stream back to the same UI over Server‑Sent Events.
+Neither is privileged. That is what makes Canvas <em>collaborative</em> in a way a
+dashboard never is.
+</p>
+
+<img src="canvas-demo.png" alt="The Multi-Agent Dev Canvas after running validation: five agent cards, a task-flow pipeline, and a validation panel showing two passing and two failing tests, with a live state timeline on the right." />
+<p><em>The canvas after the first validation run — two tests pass, two fail
+(Urgency Accuracy and Response Quality). The failure is visible in context,
+beside the agents and flows that produced it.</em></p>
+
+<h2>Five beats, one continuous loop</h2>
+
+<h3>1. Decompose — make the plan visible</h3>
+<p>
+The requirement fans out into a task‑flow graph: five components routed from the
+decomposer to executor and designer agents, each carrying a <code>pending</code>
+badge. The decomposition isn't hidden in a log you grep later — it's on the
+surface the instant it happens.
+</p>
+
+<h3>2. Execute — watch the system breathe</h3>
+<p>
+Coordinating the agents lights their cards blue as work flows through the
+pipeline. The live timeline records every mutation with a timestamp — the
+system's visible memory, shared by human and AI alike.
+</p>
+
+<h3>3. Validate — testing in context, not as an afterthought</h3>
+<p>
+We ran four evaluation tests directly on the surface:
+</p>
+
+<table>
+<tr><th>Test</th><th>Result</th></tr>
+<tr><td>Urgency Accuracy (≥ 90%)</td><td>❌ fail</td></tr>
+<tr><td>Routing Correctness (≥ 95%)</td><td>✅ pass</td></tr>
+<tr><td>Latency SLA (&lt; 30s @ 500/hr)</td><td>✅ pass</td></tr>
+<tr><td>Response Quality</td><td>✅ pass</td></tr>
+</table>
+
+<p>
+The classifier failed — and we saw it fail <em>next to</em> the agent and the
+flow that produced it. This is not a separate CI pipeline; it is a validation
+surface embedded in the development loop.
+</p>
+
+<h3>4. Inject failure — test adaptation, not just the happy path</h3>
+<p>
+We forced the validator into an error state — "eval harness lost connection to
+the dataset." Its card glowed red; the timeline logged the fault. This is chaos
+engineering applied <em>during</em> development, visible in real time. Does the
+orchestrator recover? Do downstream tasks fail gracefully? You find out before
+production does.
+</p>
+
+<img src="canvas-fault-injected.png" alt="The canvas with the validator agent forced into a red error state after a fault injection, with the failure recorded in the live state timeline." />
+<p><em>Fault injected: the <code>validate_output</code> agent is forced into an
+error state and the timeline records exactly when and why.</em></p>
+
+<h3>5. Evolve the design live — and close the loop</h3>
+<p>
+Instead of filing a ticket and context‑switching, we changed the system <em>on
+the running surface</em>: added a confidence‑fallback so low‑confidence tickets
+escalate to a human, and a <strong>GDPR constraint</strong> to redact PII before
+any model call. We resumed and re‑validated:
+</p>
+
+<table>
+<tr><th>Test</th><th>Result</th></tr>
+<tr><td>Urgency Accuracy (re‑run)</td><td>✅ pass</td></tr>
+<tr><td>Confidence Fallback</td><td>✅ pass</td></tr>
+<tr><td>GDPR Redaction</td><td>✅ pass</td></tr>
+</table>
+
+<p>
+A design decision produced a measurable outcome. We saw it fail, changed the
+design, and proved the fix — all on one surface, without leaving the runtime.
+That continuous, visual feedback loop is the whole point.
+</p>
+
+<img src="canvas-evolved.png" alt="The canvas after evolving the design and re-validating: all four tests pass, the system design now lists a Confidence Fallback component and GDPR constraint, and the timeline shows the full journey from decomposition through failure to recovery." />
+<p><em>After evolving the design (confidence fallback + GDPR redaction) and
+re‑validating: all four tests pass. The timeline tells the whole story —
+decompose → validate (2 passed) → failure injected → design updated → validate
+(4 passed) — and a <code>design-v4</code> artifact is recorded.</em></p>
+
+<h2>What this scenario proves about Canvas</h2>
+
+<ul>
+<li><strong>End‑to‑end design is visible.</strong> One requirement becomes
+agents, flows, and validations you can watch — no jumping between editor,
+terminal, test runner, and monitoring dashboard.</li>
+<li><strong>Multi‑agent collaboration is observable.</strong> Hand‑offs, pending
+work, and bottlenecks are on the surface — the insight you need to debug
+orchestration but would never expose in a production UI.</li>
+<li><strong>Fault tolerance is testable on purpose.</strong> Inject failures and
+watch adaptation, catching integration breaks early.</li>
+<li><strong>Iteration is validation‑driven.</strong> Define criteria, run, see
+failures, evolve, re‑run — a loop, not a checklist.</li>
+</ul>
+
+<h2>Human ↔ AI ↔ System — and the multi‑user frontier</h2>
+
+<p>
+It helps to position Canvas against tools you already know:
+</p>
+
+<ul>
+<li><strong>Figma</strong> is <strong>Human ↔ Human</strong>. A shared visual
+surface — but nothing executes. It's design.</li>
+<li><strong>Traditional UIs</strong> are <strong>Human ↔ System</strong>. Users
+interact with finished software.</li>
+<li><strong>Canvas</strong> is <strong>Human ↔ AI ↔ System</strong>. A shared
+surface where things actually <em>execute</em>. The developer steers, the AI
+acts, the system evolves — all visible, all live.</li>
+</ul>
+
+<p>
+Which raises the obvious next question: <em>why isn't Canvas multi‑user, scoped
+per project or repo?</em> It already has every ingredient — it's a shared space,
+it's visual, it's collaborative, and multiple participants (human and AI) act on
+the same surface. A repo‑scoped, multi‑participant Canvas would become a shared
+runtime where a whole team observes and shapes an agent system together. That is
+the compelling frontier. Today the main blocker to wider experimentation is
+licensing, not the idea — and that's worth fixing, because the idea is good.
+</p>
+
+<h2>The bigger picture</h2>
+
+<p>
+Canvas redefines software development by shifting from writing static code to
+orchestrating living systems, where developers and AI co‑create, observe, and
+evolve solutions in real time. Instead of building UIs for users, we build
+interactive environments for agents — turning debugging, testing, and execution
+into a continuous, visual feedback loop that accelerates innovation and brings
+ideas to production faster than ever.
+</p>
+
+<p>
+The triage system here is just one example. The pattern applies anywhere you
+build agent‑driven software: AI orchestration, workflow automation, data
+pipelines, autonomous services. Anywhere you need to see, steer, and validate a
+complex system as it runs — that's where Canvas belongs. Not as the board you
+ship, but as the runtime you shape it in.
+</p>
+
+<h2>Try it yourself</h2>
+
+<ol>
+<li>Reload the extension: <code>extensions_reload</code></li>
+<li>Open the canvas:
+<code>open_canvas({ canvasId: "multi-agent-dev", instanceId: "dev-1" })</code></li>
+<li>Drive the five beats — Decompose → Execute → Validate → Inject Failure →
+Update Design → Validate — by clicking, or with
+<code>invoke_canvas_action</code>.</li>
+</ol>
+
+<p>
+Full walkthrough: <a href="../../scenario.md">scenario.md</a>. Reusable demo
+prompt: <a href="../../prompts/canvas-showcase-prompt.md">canvas‑showcase‑prompt.md</a>.
+Companion deep‑dive: <a href="canvas-is-not-a-ui-builder.html">Canvas Is Not a UI
+Builder</a>.
+</p>
+
+<h2>Resources</h2>
+
+<ul>
+<li><a href="https://docs.github.com/en/copilot">GitHub Copilot Documentation</a></li>
+<li><a href="https://learn.microsoft.com/en-us/azure/ai-services/agents/">Azure AI Agent Service Documentation</a></li>
+</ul>
+
+</body>
